@@ -1,1 +1,19 @@
-// TODO
+.content {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 0 2rem;
+
+  button {
+    font-size: 1.125rem;
+    color: var(--pink);
+    font-weight: 600;
+    margin-top: 3.125rem;
+    background: transparent;
+    border: none;
+    transition: filter 0.2s;
+
+    &:hover {
+      filter: brightness(0.9);
+    }
+  }
+}
