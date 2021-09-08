@@ -8,7 +8,7 @@ import Prismic from "@prismicio/client";
 import { getPrismicClient } from "../../services/prismic";
 import { RichText } from "prismic-dom";
 
-import { formatDate } from "../../utils/formatDate";
+import { formatDate, formatDateLastPublication } from "../../utils/formatDate";
 
 import { FiCalendar, FiUser, FiClock } from "react-icons/fi";
 
@@ -17,6 +17,7 @@ import styles from "./post.module.scss";
 
 interface Post {
   first_publication_date: string | null;
+  last_publication_date: string | null;
   data: {
     uid: string;
     title: string;
@@ -92,6 +93,10 @@ export default function Post({ post }: PostProps) {
             </p>
           </div>
 
+          <time className={styles.lastPublicationDate}>
+            {formatDateLastPublication(post.last_publication_date)}
+          </time>
+
           {post.data.content.map((content) => (
             <article key={content.heading} className={styles.textContent}>
               <h2>{content.heading}</h2>
@@ -137,12 +142,13 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   const prismic = getPrismicClient();
   const response = await prismic.getByUID("posts", String(slug), {});
 
-  const { uid, first_publication_date } = response;
+  const { uid, first_publication_date, last_publication_date } = response;
   const { title, subtitle, banner, author, content } = response.data;
 
   const post = {
     uid,
     first_publication_date,
+    last_publication_date,
     data: {
       title,
       subtitle,
