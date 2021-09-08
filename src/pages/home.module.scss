@@ -24,13 +24,17 @@
       align-items: center;
       font-size: 0.875rem;
       color: var(--gray-200);
-      margin-right: 24px;
+      margin-right: 1.5rem;
+    }
+
+    &:last-child {
+      margin-bottom: 3.75rem;
     }
 
     svg {
       width: 20px;
       height: 20px;
-      margin-right: 8px;
+      margin-right: 0.5rem;
     }
   }
 }

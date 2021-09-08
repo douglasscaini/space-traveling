@@ -1,20 +1,19 @@
-import { useState } from 'react';
-import { GetStaticProps } from 'next';
-import Link from 'next/link';
-import Head from 'next/head';
+import { useState } from "react";
+import { GetStaticProps } from "next";
+import Link from "next/link";
+import Head from "next/head";
 
-import Prismic from '@prismicio/client';
-import { getPrismicClient } from '../services/prismic';
+import Prismic from "@prismicio/client";
+import { getPrismicClient } from "../services/prismic";
 
-import Header from '../components/Header';
+import Header from "../components/Header";
 
-import { format } from 'date-fns';
-import ptBR from 'date-fns/locale/pt-BR';
+import { formatDate } from "../utils/formatDate";
 
-import { FiCalendar, FiUser } from 'react-icons/fi';
+import { FiCalendar, FiUser } from "react-icons/fi";
 
-import commonStyles from '../styles/common.module.scss';
-import styles from './home.module.scss';
+import commonStyles from "../styles/common.module.scss";
+import styles from "./home.module.scss";
 
 interface Post {
   uid?: string;
@@ -41,9 +40,9 @@ export default function Home({ postsPagination }: HomeProps) {
 
   function handleLoadMorePosts() {
     fetch(nextPage)
-      .then(response => response.json())
-      .then(data => {
-        const formattedData = data.results.map(post => {
+      .then((response) => response.json())
+      .then((data) => {
+        const formattedData = data.results.map((post) => {
           const { uid, first_publication_date } = post;
           const { title, subtitle, author } = post.data;
 
@@ -72,7 +71,7 @@ export default function Home({ postsPagination }: HomeProps) {
       <Header />
 
       <main className={commonStyles.content}>
-        {posts.map(post => (
+        {posts.map((post) => (
           <div key={post.uid} className={styles.post}>
             <Link href={`/post/${post.uid}`}>
               <a>
@@ -84,9 +83,7 @@ export default function Home({ postsPagination }: HomeProps) {
             <div>
               <time>
                 <FiCalendar />
-                {format(new Date(post.first_publication_date), 'dd MMM yyy', {
-                  locale: ptBR,
-                })}
+                {formatDate(post.first_publication_date)}
               </time>
 
               <p>
@@ -109,11 +106,11 @@ export const getStaticProps: GetStaticProps = async () => {
   const prismic = getPrismicClient();
 
   const postsResponse = await prismic.query(
-    [Prismic.predicates.at('document.type', 'posts')],
-    { pageSize: 1 }
+    [Prismic.predicates.at("document.type", "posts")],
+    { pageSize: 4 }
   );
 
-  const posts = postsResponse.results.map(post => {
+  const posts = postsResponse.results.map((post) => {
     const { uid, first_publication_date } = post;
     const { title, subtitle, author } = post.data;
 
