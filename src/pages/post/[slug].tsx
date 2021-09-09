@@ -1,9 +1,11 @@
 import { GetStaticPaths, GetStaticProps } from "next";
 import { useRouter } from "next/router";
 import Head from "next/head";
+import Link from "next/link";
 
 import Header from "../../components/Header";
 import Comments from "../../components/Utterances/Comments";
+import PreviewButton from "../../components/PreviewButton/PreviewButton";
 
 import Prismic from "@prismicio/client";
 import { getPrismicClient } from "../../services/prismic";
@@ -38,9 +40,10 @@ interface Post {
 
 interface PostProps {
   post: Post;
+  preview: boolean;
 }
 
-export default function Post({ post }: PostProps) {
+export default function Post({ post, preview }: PostProps) {
   const router = useRouter();
 
   if (router.isFallback) {
@@ -110,10 +113,12 @@ export default function Post({ post }: PostProps) {
               />
             </article>
           ))}
+
+          <Comments />
+
+          {preview && <PreviewButton />}
         </article>
       </main>
-
-      <Comments />
     </>
   );
 }
@@ -139,11 +144,17 @@ export const getStaticPaths: GetStaticPaths = async () => {
   };
 };
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
+export const getStaticProps: GetStaticProps = async ({
+  params,
+  preview = false,
+  previewData,
+}) => {
   const { slug } = params;
 
   const prismic = getPrismicClient();
-  const response = await prismic.getByUID("posts", String(slug), {});
+  const response = await prismic.getByUID("posts", String(slug), {
+    ref: previewData?.ref ?? null,
+  });
 
   const { uid, first_publication_date, last_publication_date } = response;
   const { title, subtitle, banner, author, content } = response.data;
@@ -169,7 +180,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   };
 
   return {
-    props: { post },
+    props: { post, preview },
     revalidate: 60 * 30, // 30 minutes
   };
 };

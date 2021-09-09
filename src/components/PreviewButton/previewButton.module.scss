@@ -1,0 +1,24 @@
+.buttonPreview {
+  height: 3.625rem;
+  background: var(--gray-50);
+  color: black;
+  border-radius: 0.25rem;
+
+  font-weight: 600;
+  font-size: 1.125rem;
+  line-height: 1.375rem;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  cursor: pointer;
+  margin-top: 5rem;
+  margin-bottom: 5rem;
+
+  transition: filter 0.2s;
+
+  &:hover {
+    filter: brightness(0.9);
+  }
+}
