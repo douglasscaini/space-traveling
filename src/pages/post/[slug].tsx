@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import Head from "next/head";
 
 import Header from "../../components/Header";
+import Comments from "../../components/Utterances/Comments";
 
 import Prismic from "@prismicio/client";
 import { getPrismicClient } from "../../services/prismic";
@@ -111,6 +112,8 @@ export default function Post({ post }: PostProps) {
           ))}
         </article>
       </main>
+
+      <Comments />
     </>
   );
 }
