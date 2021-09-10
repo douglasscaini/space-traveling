@@ -41,9 +41,23 @@ interface Post {
 interface PostProps {
   post: Post;
   preview: boolean;
+  navigationItems?: {
+    afterPost?: {
+      uid: string;
+      data: {
+        title: string;
+      };
+    };
+    beforePost?: {
+      uid: string;
+      data: {
+        title: string;
+      };
+    };
+  };
 }
 
-export default function Post({ post, preview }: PostProps) {
+export default function Post({ post, preview, navigationItems }: PostProps) {
   const router = useRouter();
 
   if (router.isFallback) {
@@ -114,6 +128,26 @@ export default function Post({ post, preview }: PostProps) {
             </article>
           ))}
 
+          <section>
+            {navigationItems.beforePost && (
+              <div>
+                <h3>{navigationItems.beforePost.data.title}</h3>
+                <Link href={`/post/${navigationItems.beforePost.uid}`}>
+                  <a>Post anterior</a>
+                </Link>
+              </div>
+            )}
+
+            {navigationItems.afterPost && (
+              <div>
+                <h3>{navigationItems.afterPost.data.title}</h3>
+                <Link href={`/post/${navigationItems.afterPost.uid}`}>
+                  <a className={styles.rightLink}>Próximo post</a>
+                </Link>
+              </div>
+            )}
+          </section>
+
           <Comments />
 
           {preview && <PreviewButton />}
@@ -179,8 +213,40 @@ export const getStaticProps: GetStaticProps = async ({
     },
   };
 
+  const postsResponse = await prismic.query([
+    Prismic.predicates.at("document.type", "posts"),
+  ]);
+
+  const postsFormattedData = postsResponse.results.map((post) => {
+    return {
+      uid: post.uid,
+      data: {
+        title: post.data.title,
+      },
+    };
+  });
+
+  const currentPostPositionIndex = postsFormattedData.findIndex(
+    (post) => post.uid === response.uid
+  );
+
+  const otherPosts = postsFormattedData.filter(
+    (post, index) =>
+      index === currentPostPositionIndex + 1 ||
+      index === currentPostPositionIndex - 1
+  );
+
+  const navigationItems = {
+    afterPost: otherPosts[0] ?? null,
+    beforePost: otherPosts[1] ?? null,
+  };
+
   return {
-    props: { post, preview },
+    props: {
+      post,
+      preview,
+      navigationItems,
+    },
     revalidate: 60 * 30, // 30 minutes
   };
 };
