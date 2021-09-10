@@ -13,7 +13,7 @@
 
 ## :speech_balloon: Sobre <a name="about"></a>
 
-> O `spacetraveling` é uma aplicação newsletter sobre tecnologia.
+> O `spacetraveling` é um blog de tecnologia que utiliza Utterances e CMS (Prismic CMS).
 
 <br />
 <table>
